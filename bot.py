@@ -1,4 +1,3 @@
-cat > /home/claude/elonbot/bot_new.py << 'ENDOFFILE'
 import os
 import json
 import logging
