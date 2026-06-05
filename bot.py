@@ -36,49 +36,41 @@ def type_keyboard():
          InlineKeyboardButton("🏡 Uy", callback_data="type_uy")],
         [InlineKeyboardButton("🌿 Yer", callback_data="type_yer"),
          InlineKeyboardButton("🏢 Tijorat", callback_data="type_tijorat")],
-        [InlineKeyboardButton("❌ Bekor", callback_data="cancel")]
+        [InlineKeyboardButton("Bekor", callback_data="cancel")]
     ])
 
 def admin_keyboard(elon_id):
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("✅ Tasdiqlash", callback_data=f"approve_{elon_id}"),
-         InlineKeyboardButton("❌ Rad etish", callback_data=f"reject_{elon_id}")]
+        [InlineKeyboardButton("Tasdiqlash", callback_data=f"approve_{elon_id}"),
+         InlineKeyboardButton("Rad etish", callback_data=f"reject_{elon_id}")]
     ])
 
 def format_elon(elon):
     return (
-        f"🏷 Tur: {elon['tur']}\n"
-        f"📌 Sarlavha: {elon['sarlavha']}\n"
-        f"💰 Narx: {elon['narx']}\n"
-        f"📐 Maydon: {elon['maydon']}\n"
-        f"📍 Manzil: {elon['manzil']}\n"
-        f"📞 Telefon: {elon['telefon']}\n"
-        f"📝 Tavsif: {elon['tavsif']}"
+        "Tur: " + elon["tur"] + "\n"
+        "Sarlavha: " + elon["sarlavha"] + "\n"
+        "Narx: " + elon["narx"] + "\n"
+        "Maydon: " + elon["maydon"] + "\n"
+        "Manzil: " + elon["manzil"] + "\n"
+        "Telefon: " + elon["telefon"] + "\n"
+        "Tavsif: " + elon["tavsif"]
     )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     name = update.effective_user.first_name
-    text = (
-        f"Assalomu alaykum, {name}!\n\n"
-        "🏠 UyBozor Botga xush kelibsiz!\n\n"
-        "Ko'chmas mulk elonlari bering va koring.\n\n"
-        "Quyidagi tugmalardan tanlang 👇"
+    await update.message.reply_text(
+        "Assalomu alaykum, " + name + "!\n\nUyBozor Botga xush kelibsiz!\nKo'chmas mulk elonlari bering va koring.\n\nTugmalardan tanlang:",
+        reply_markup=main_keyboard()
     )
-    await update.message.reply_text(text, reply_markup=main_keyboard())
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = (
-        "ℹ️ Yordam\n\n"
-        "📢 E'lon berish - yangi elon\n"
-        "🔍 E'lonlarni ko'rish - barcha elonlar\n"
-        "🔎 Qidirish - shahar yoki nom boyicha\n\n"
-        "Muammo bolsa adminga yozing."
+    await update.message.reply_text(
+        "Yordam:\n\nE'lon berish - yangi elon\nE'lonlarni korish - barcha elonlar\nQidirish - nom boyicha qidirish"
     )
-    await update.message.reply_text(text)
 
 async def elon_berish_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    await update.message.reply_text("📢 Elon turini tanlang:", reply_markup=type_keyboard())
+    await update.message.reply_text("Elon turini tanlang:", reply_markup=type_keyboard())
     return CHOOSING_TYPE
 
 async def choose_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -88,43 +80,43 @@ async def choose_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("Bekor qilindi.")
         return ConversationHandler.END
     type_map = {
-        "type_xonadon": "🏠 Xonadon",
-        "type_uy": "🏡 Uy",
-        "type_yer": "🌿 Yer",
-        "type_tijorat": "🏢 Tijorat"
+        "type_xonadon": "Xonadon",
+        "type_uy": "Uy",
+        "type_yer": "Yer",
+        "type_tijorat": "Tijorat"
     }
     context.user_data["tur"] = type_map[query.data]
-    await query.edit_message_text(f"{context.user_data['tur']} tanlandi.\n\nSarlavhani kiriting:\nMisol: 3 xonali kvartira Chilonzor")
+    await query.edit_message_text(context.user_data["tur"] + " tanlandi.\n\nSarlavhani kiriting:\nMisol: 3 xonali kvartira Chilonzor")
     return ENTER_TITLE
 
 async def enter_title(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["sarlavha"] = update.message.text
-    await update.message.reply_text("💰 Narxni kiriting:\nMisol: 85000$ yoki 950 000 000 som")
+    await update.message.reply_text("Narxni kiriting:\nMisol: 85000$ yoki 950000000 som")
     return ENTER_PRICE
 
 async def enter_price(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["narx"] = update.message.text
-    await update.message.reply_text("📐 Maydonni kiriting:\nMisol: 78 kv.m yoki 8 sotix")
+    await update.message.reply_text("Maydonni kiriting:\nMisol: 78 kv.m yoki 8 sotix")
     return ENTER_AREA
 
 async def enter_area(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["maydon"] = update.message.text
-    await update.message.reply_text("📍 Manzilni kiriting:\nMisol: Toshkent, Chilonzor tumani")
+    await update.message.reply_text("Manzilni kiriting:\nMisol: Toshkent, Chilonzor tumani")
     return ENTER_LOCATION
 
 async def enter_location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["manzil"] = update.message.text
-    await update.message.reply_text("📞 Telefon raqamni kiriting:\nMisol: +998901234567")
+    await update.message.reply_text("Telefon raqamni kiriting:\nMisol: +998901234567")
     return ENTER_PHONE
 
 async def enter_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["telefon"] = update.message.text
-    await update.message.reply_text("📝 Qoshimcha malumot kiriting.\nYoq bolsa - yoq deb yozing.")
+    await update.message.reply_text("Qoshimcha malumot kiriting.\nYoq bolsa yoq deb yozing.")
     return ENTER_DESC
 
 async def enter_desc(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["tavsif"] = update.message.text
-    await update.message.reply_text("📸 Rasm yuboring (ixtiyoriy)\nRasm yoq bolsa /skip yozing")
+    await update.message.reply_text("Rasm yuboring.\nRasm yoq bolsa /skip yozing.")
     return ENTER_PHOTO
 
 async def enter_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -161,21 +153,25 @@ async def save_elon(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db["elonlar"].append(elon)
     save_db(db)
     await update.message.reply_text(
-        f"Elon #{elon_id} qabul qilindi!\nAdmin tasdiqlagandan song ko'rinadi.",
+        "Elon " + str(elon_id) + " qabul qilindi!\nAdmin tasdiqlagandan song korinadi.",
         reply_markup=main_keyboard()
     )
     elon_text = format_elon(elon)
     try:
         if elon.get("rasm"):
-            await context.bot.send_photo(ADMIN_ID, elon["rasm"],
-                caption=f"Yangi elon #{elon_id}\n\n{elon_text}",
-                reply_markup=admin_keyboard(elon_id))
+            await context.bot.send_photo(
+                ADMIN_ID, elon["rasm"],
+                caption="Yangi elon " + str(elon_id) + "\n\n" + elon_text,
+                reply_markup=admin_keyboard(elon_id)
+            )
         else:
-            await context.bot.send_message(ADMIN_ID,
-                f"Yangi elon #{elon_id}\n\n{elon_text}",
-                reply_markup=admin_keyboard(elon_id))
+            await context.bot.send_message(
+                ADMIN_ID,
+                "Yangi elon " + str(elon_id) + "\n\n" + elon_text,
+                reply_markup=admin_keyboard(elon_id)
+            )
     except Exception as e:
-        logger.error(f"Admin xabar xato: {e}")
+        logger.error("Admin xabar xato: " + str(e))
 
 async def elonlarni_korish(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db = load_db()
@@ -183,9 +179,9 @@ async def elonlarni_korish(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not tasdiqlangan:
         await update.message.reply_text("Hozircha elon yoq.", reply_markup=main_keyboard())
         return
-    await update.message.reply_text(f"Jami {len(tasdiqlangan)} ta elon:")
+    await update.message.reply_text("Jami " + str(len(tasdiqlangan)) + " ta elon:")
     for elon in tasdiqlangan[-10:]:
-        text = f"Elon #{elon['id']}\n\n{format_elon(elon)}"
+        text = "Elon " + str(elon["id"]) + "\n\n" + format_elon(elon)
         try:
             if elon.get("rasm"):
                 await update.message.reply_photo(elon["rasm"], caption=text)
@@ -212,9 +208,9 @@ async def qidirish_natija(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not natijalar:
         await update.message.reply_text("Elon topilmadi.", reply_markup=main_keyboard())
         return ConversationHandler.END
-    await update.message.reply_text(f"{len(natijalar)} ta elon topildi:")
+    await update.message.reply_text(str(len(natijalar)) + " ta elon topildi:")
     for elon in natijalar[:5]:
-        text = f"Elon #{elon['id']}\n\n{format_elon(elon)}"
+        text = "Elon " + str(elon["id"]) + "\n\n" + format_elon(elon)
         try:
             if elon.get("rasm"):
                 await update.message.reply_photo(elon["rasm"], caption=text)
@@ -228,7 +224,6 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     if update.effective_user.id != ADMIN_ID:
-        await query.answer("Siz admin emassiz!", show_alert=True)
         return
     data = query.data
     db = load_db()
@@ -242,9 +237,9 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await query.edit_message_reply_markup(reply_markup=None)
                 except Exception:
                     pass
-                await context.bot.send_message(query.message.chat_id, f"Elon #{elon_id} tasdiqlandi!")
+                await context.bot.send_message(query.message.chat_id, "Elon " + str(elon_id) + " tasdiqlandi!")
                 try:
-                    await context.bot.send_message(elon["user_id"], f"Elon #{elon_id} tasdiqlandi!")
+                    await context.bot.send_message(elon["user_id"], "Elon " + str(elon_id) + " tasdiqlandi!")
                 except Exception:
                     pass
                 break
@@ -256,7 +251,7 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_reply_markup(reply_markup=None)
         except Exception:
             pass
-        await context.bot.send_message(query.message.chat_id, f"Elon #{elon_id} rad etildi.")
+        await context.bot.send_message(query.message.chat_id, "Elon " + str(elon_id) + " rad etildi.")
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
@@ -301,5 +296,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-ENDOFFILE
-python3 -c "import ast; ast.parse(open('/home/claude/elonbot/bot_new.py').read()); print('OK')"
